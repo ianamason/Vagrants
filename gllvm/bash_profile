@@ -1,0 +1,7 @@
+export GOPATH=${HOME}/go
+
+LLVM=/usr/lib/llvm-10/bin/
+
+export PATH=${LLVM}:${GOPATH}/bin:${PATH}
+
+export $(dbus-launch)
