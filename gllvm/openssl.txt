@@ -32,9 +32,10 @@ cd /home/vagrant/openssl/bin
 
 # we use the -m flag to get a listing as well as the linked bitcode
 
- get-bc -m openssl
+get-bc -m openssl
 
- wc openssl.bc.llvm.manifest
+wc openssl.bc.llvm.manifest
+
 
 # shows that there are 70 bitcode files involved (not including the two dynamic libraries)
 
@@ -63,7 +64,7 @@ wc libssl.so.3.bc.llvm.manifest
 
 get-bc -b -m libcrypto.so.3 
 wc libcrypto.so.3.bc.llvm.manifest
-#852 !
+# 852 !
 
 
 # the llvm documentation is here: https://releases.llvm.org/10.0.0/docs/index.html
@@ -80,3 +81,21 @@ dot -Tpng callgraph.dot -o openssl.png
 dot -Tsvg callgraph.dot -o openssl.svg
 mv openssl.svg /vagrant
 mv openssl.png /vagrant
+
+# if you want the bitcode etc out in the shared folder:
+
+cd /home/vagrant/openssl/bin
+mv openssl.* /vagrant
+
+
+cd /home/vagrant/openssl/lib
+mv *.bc /vagrant
+mv *.bc.* /vagrant
+
+# to convert the bc to "human readable":
+llvm-dis <bitcode> -o <ll file>
+
+# a random file in libcrypto:
+# /home/vagrant/openssl-openssl-3.0.0-alpha6/crypto/ec/curve448/.libcrypto-shlib-curve448.o.bc
+
+opt --dot-callgraph /home/vagrant/openssl-openssl-3.0.0-alpha6/crypto/ec/curve448/.libcrypto-shlib-curve448.o.bc > /dev/null
