@@ -1,0 +1,82 @@
+# notes for clt 08/16/2020
+
+# best to do this in the vagrant home (shared folders are not really a linux file system, hard links fail for example)
+
+cd /home/vagrant 
+
+wget https://github.com/openssl/openssl/archive/openssl-3.0.0-alpha6.tar.gz
+
+tar xvfz openssl-3.0.0-alpha6.tar.gz
+
+cd openssl-openssl-3.0.0-alpha6
+
+# test if clang is OK
+./Configure no-asm
+
+# ok now for the real thing
+CC=gclang ./Configure no-asm --prefix=/home/vagrant/openssl
+make
+make test
+make install
+
+# (I am hoping that the objcopy complaints are just the usual 'objcopy not keeping up with clang')
+# https://github.com/travitch/whole-program-llvm/issues/75
+
+
+
+# look at the executables:
+
+cd /home/vagrant/openssl/bin
+
+# c_rehash is a perl executable, so we skip that.
+
+# we use the -m flag to get a listing as well as the linked bitcode
+
+ get-bc -m openssl
+
+ wc openssl.bc.llvm.manifest
+
+# shows that there are 70 bitcode files involved (not including the two dynamic libraries)
+
+ldd openssl
+
+# look into why they aren't found sometime ...
+
+# go look at them
+
+cd ../lib/
+
+ls -la
+
+# can extract the bitcode for libssl.so.3 libcrypto.so.3 and libcrypto.a into limked modules or bitcode archives.
+# we do modules here:
+
+get-bc -b -m libssl.a
+wc libssl.a.bc.llvm.manifest
+# 46
+
+
+get-bc -b -m libssl.so.3
+wc libssl.so.3.bc.llvm.manifest
+# 46
+
+
+get-bc -b -m libcrypto.so.3 
+wc libcrypto.so.3.bc.llvm.manifest
+#852 !
+
+
+# the llvm documentation is here: https://releases.llvm.org/10.0.0/docs/index.html
+
+opt --dot-callgraph libssl.a.bc > /dev/null
+dot -Tpng callgraph.dot -o libssl.png
+mv libssl.png /vagrant
+
+# which is too big to be of much use (maybe svg would be better), lets look at the executable:
+
+cd ../bin
+opt --dot-callgraph openssl.bc > /dev/null
+dot -Tpng callgraph.dot -o openssl.png
+dot -Tsvg callgraph.dot -o openssl.svg
+mv openssl.svg /vagrant
+mv openssl.png /vagrant

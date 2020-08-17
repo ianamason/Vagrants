@@ -1,9 +1,11 @@
 
 sudo apt-get update
 
-sudo apt-get install -y emacs25 dbus-x11
+sudo apt-get install -y emacs25 dbus-x11 tree
 
 sudo apt-get install -y git golang-go golang
+
+sudo apt-get install -y graphviz
 
 cmake make autoconf valgrind
 
