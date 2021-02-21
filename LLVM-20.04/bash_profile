@@ -1,0 +1,19 @@
+export WLLVM_HOME=/home/vagrant/.local/bin/
+
+export LLVM_HOME=`llvm-config-11 --bindir`
+
+export LLVM_COMPILER=clang
+
+export WLLVM_OUTPUT_LEVEL=WARNING
+
+export LLVM_COMPILER_PATH=${LLVM_HOME}
+
+export OCCAM_HOME=/home/vagrant/occam
+
+ANT=/home/vagrant/apache-ant-1.10.2/bin
+
+export JAVA_HOME=/usr/lib/jvm/java-8-oracle/
+
+export GOPATH=/vagrant/go
+
+export PATH=${GOPATH}/bin:${ANT}:${WLLVM_HOME}:${LLVM_HOME}:${PATH}

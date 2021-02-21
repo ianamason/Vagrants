@@ -1,0 +1,3 @@
+The LLVM version appears hardcoded in the bootstrap and the configure scripts,
+as well as the bash_profile.
+Change one, and you should change all of them. Sorry.
